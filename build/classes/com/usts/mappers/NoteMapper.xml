@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.usts.dao.NoteDao">
+
+	<resultMap type="Note" id="NoteResult">
+		<result property="id" column="id"/>
+		<result property="noteTitle" column="noteTitle"/>
+		<result property="noteCreateTime" column="noteCreateTime"/>
+		<result property="noteInfo" column="noteInfo"/>
+	</resultMap>
+	
+	
+	<select id="find" parameterType="Map" resultMap="NoteResult">
+		select * from t_note
+		<where> 
+			<if test="noteTitle != null and noteTitle != ''">
+				and noteTitle like #{noteTitle}
+			</if>
+		</where>
+		 <!-- 每页的大小不为null -->
+		<if test="start != null and size != null"> 
+				limit #{start},#{size}
+		</if>
+	</select>
+	
+	<select id="getTotal" parameterType="Map" resultType="Long">
+			select count(*) from t_note
+			<where>
+			<if test="noteTitle != null and noteTitle != ''">
+				and noteTitle like #{noteTitle}
+			</if>
+		</where>	
+	</select>
+	
+	<insert id="add" parameterType="Note">
+		insert into t_note values(null,#{noteTitle},#{noteCreateTime},#{noteInfo})
+	</insert>
+	
+	<update id="update" parameterType="Note">
+		update t_note
+		<set>
+			<if test="noteTitle!=null and noteTitle!='' ">
+				noteTitle=#{noteTitle},
+			</if>
+			<if test="noteCreateTime!=null">
+				noteCreateTime=#{noteCreateTime},
+			</if>
+			<if test="noteInfo!=null and noteInfo!='' ">
+				noteInfo=#{noteInfo},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<delete id="delete" parameterType="Integer">
+		delete from t_note where id = #{id}
+	</delete>
+	
+	<select id="findById" parameterType="Integer" resultMap="NoteResult">
+		select * from t_note where id=#{id}
+	</select>
+	
+</mapper> 

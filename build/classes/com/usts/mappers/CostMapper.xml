@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.usts.dao.CostDao">
+
+	<resultMap type="Cost" id="CostResult">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="time" column="time"/>
+		<result property="price" column="price"/>
+		<result property="remark" column="remark"/>
+	</resultMap>
+	
+	
+	<select id="find" parameterType="Map" resultMap="CostResult">
+		select * from t_cost
+		<where>
+			<if test="name != null and name != ''">
+				and name like #{name}
+			</if>
+		</where>
+		 <!-- 每页的大小不为null -->
+		<if test="start != null and size != null"> 
+				limit #{start},#{size}
+		</if>
+	</select>
+	
+	<select id="getTotal" parameterType="Map" resultType="Long">
+			select count(*) from t_cost
+			<where>
+			<if test="name != null and name != ''">
+				and name like #{name}
+			</if>
+		</where>	
+	</select>
+	
+	<update id="update" parameterType="Cost">
+		update t_cost
+		<set>
+			<if test="name!=null and name!='' ">
+				name=#{name},
+			</if>
+			<if test="time!=null and time!='' ">
+				time=#{time},
+			</if>
+			<if test="price!=null and price!='' ">
+				price=#{price},
+			</if>
+			<if test="remark!=null and remark!='' ">
+				remark=#{remark},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<insert id="add" parameterType="Cost">
+		insert into t_cost values(null,#{name},#{time},#{price},#{remark}) 
+	</insert>
+	
+	<delete id="delete" parameterType="Integer">
+		delete from t_cost where id = #{id}
+	</delete>
+	
+</mapper> 
